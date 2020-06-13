@@ -10,12 +10,15 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.rab3.controller.dto.ProfileDTO;
 import com.rab3.dao.ProfileDaoRepository;
 import com.rab3.dao.entity.ProfileEntity;
+import com.rab3.dao.utils.Utils;
 
 @Service
+@Transactional
 public class ProfileServiceImpl  implements  ProfileService{
    
 	@Autowired
@@ -49,7 +52,9 @@ public class ProfileServiceImpl  implements  ProfileService{
 		ProfileEntity profileEntity=new ProfileEntity();
 		BeanUtils.copyProperties(profileDTO, profileEntity);
 		try {
-			profileEntity.setHphoto(profileDTO.getPhoto().getBytes());
+			if(profileDTO.getPhoto()!=null) {
+				profileEntity.setHphoto(profileDTO.getPhoto().getBytes());	
+			}
 			profileEntity.setRole("customer");
 			profileEntity.setDoe(new Timestamp(new Date().getTime()));
 		} catch (IOException e) {
@@ -69,9 +74,20 @@ public class ProfileServiceImpl  implements  ProfileService{
 	
 	@Override
 public 	String updateProfila(ProfileDTO profileDTO) {
+		
 		ProfileEntity profileEntity=new ProfileEntity();
 		BeanUtils.copyProperties(profileDTO, profileEntity);
-		profileDao.save(profileEntity);
+		try {
+			if(profileDTO.getPhoto()!=null &&  profileDTO.getPhoto().getBytes()!=null & profileDTO.getPhoto().getBytes().length>5) {
+				profileEntity.setHphoto(profileDTO.getPhoto().getBytes());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		//data is in Session 
+		ProfileEntity dbprofileEntity=profileDao.findById(profileDTO.getAid()).get();
+		Utils.copyNonNullProperties(profileEntity, dbprofileEntity);
+		
 		return "done";
 	}
 	
@@ -87,6 +103,7 @@ public 	String updateProfila(ProfileDTO profileDTO) {
 		 for(ProfileEntity entity:lista) {
 			 ProfileDTO profileDTO=new  ProfileDTO();
 				BeanUtils.copyProperties(entity, profileDTO);
+				profileDTO.setPphoto(entity.getHphoto());
 				profileDTOs.add(profileDTO);
 		 }
 		 return profileDTOs;
