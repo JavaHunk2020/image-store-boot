@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rab3.controller.dto.AppNameId;
 import com.rab3.controller.dto.ApplicationVO;
 import com.rab3.controller.dto.ProfileDTO;
 import com.rab3.service.ProfileService;
@@ -24,6 +25,25 @@ public class ProfileRestController {
 	
 	@Autowired
 	private ProfileService profileService;
+	
+	/**
+	 *    /*  {
+    		        	  "aid":122,
+    		        	   "appname" : "rab3tech"
+    		          } */
+	/**
+	 * @param appNameId
+	 * @return
+	 */
+	
+	@DeleteMapping("/dprofiles")
+	public ApplicationVO deleteProfileJsonInpit(@RequestBody AppNameId appNameId) {
+		profileService.deleteById(appNameId.getAid());
+		ApplicationVO applicationVO=new ApplicationVO();
+		applicationVO.setCode("O8182");
+		applicationVO.setMessage("profile is deleted successfully for aid = "+appNameId.getAid()+" and appname = "+appNameId.getAppname());
+		return applicationVO;
+	}
 	
 	@GetMapping("password/email")
 	public ApplicationVO findPasswordEmail(@RequestParam("email") String email ) {

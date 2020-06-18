@@ -23,4 +23,6 @@ public interface ProfileService {
 
 	long findCounts();
 
+	void deleteById(int aid);
+
 }

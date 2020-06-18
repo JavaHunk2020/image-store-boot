@@ -29,7 +29,39 @@
 }
 </style>
 	
-	
+	<script type="text/javascript">
+    	   function deleteRow(aid) {
+    		          //Make Ajax call
+    		         /*  {
+    		        	  "aid":122,
+    		        	   "appname" : "rab3tech"
+    		          } */
+    		          var obj={};
+    		          obj.aid=aid;
+    		          obj.appname="rab3tech";
+    		          //JavaScript Object into json
+    		           var jsonString= JSON.stringify(obj);
+    		        	
+    		          const options = {
+    		        		   method: 'DELETE',
+    		        		   body: jsonString,
+    		        		   headers: {
+    		        		     'Content-Type': 'application/json',
+    		        		     'Accept': 'application/json'
+    		        		   }
+    		        		 };
+
+    		        		 var promise=fetch('api2/dprofiles', options);
+    		        		
+    		        		 promise .then(res => res.json())
+    		        		   .then(data => {
+    		        			   console.log(data);
+    		        			   $("#shankar_"+aid).hide();
+    		        			   $("#mmessage").html(data.message);
+    		        		   });
+    		         
+	      }
+	</script>
 </head>
 <body>
 	<header style="height: 30px; background-color: #03a9f4;"> </header>
@@ -42,8 +74,10 @@
 			<img
 			src="images/group.png" style="height: 150px;" class="img-thumbnail">
 			</a>
+			<span id="mmessage" style="font-size: 18px;color: red;"></span>
 		<hr />
 		<h4>Profiles Data</h4>
+		<button type="button" class="btn btn-primary">Add Profile</button>
 		<hr />
 		 <table class="table table-bordered">
     <thead>
@@ -62,7 +96,7 @@
     List<ProfileDTO> profileDTOs=(List<ProfileDTO>)request.getAttribute("profileDTOs");
     for(ProfileDTO dto:profileDTOs) {
     %>
-      <tr>
+      <tr   id="shankar_<%=dto.getAid() %>">
         <td><%=dto.getUsername() %></td>
           <td><%=dto.getName() %></td>
             <td><%=dto.getEmail() %></td>
@@ -72,7 +106,7 @@
         
         </td>
          <td>
-          <a href="deleteProfile?uname=<%=dto.getUsername() %>">
+        <a href="javascript:deleteRow(<%=dto.getAid() %>);">
          <img src="images/icons8-delete-100.png"  style="height: 80px;">
          </a>
          &nbsp;  &nbsp;  &nbsp;

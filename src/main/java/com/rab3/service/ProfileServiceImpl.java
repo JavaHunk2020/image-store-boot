@@ -36,6 +36,12 @@ public class ProfileServiceImpl  implements  ProfileService{
 	}
 	
 	
+
+	@Override
+	public void deleteById(int aid) {
+		profileDao.deleteById(aid);
+	}
+	
 	@Override
 	public byte[] findPhotoById(int aid) {
 		Optional<ProfileEntity> result=profileDao.findById(aid);
