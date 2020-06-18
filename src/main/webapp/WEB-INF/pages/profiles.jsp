@@ -28,8 +28,58 @@
   transform: scale(2.0); /* (200% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
 </style>
-	
+
+
 	<script type="text/javascript">
+	
+	            function saveProfle(){
+	            	  var profile={};
+	            	  profile.username=$("#username").val();
+	            	  profile.password=$("#password").val();
+	            	  profile.name=$("#name").val();
+	            	  profile.email=$("#email").val();
+	            	  profile.gender=$("#gender").val();
+	            	  
+	            	  //JavaScript Object into json
+                      var jsonString= JSON.stringify(profile);
+	            	  
+                     const options = {
+                              method: 'POST',
+                              body: jsonString,
+                              headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                              }
+                            };
+
+                            var promise=fetch('api2/profiles', options);
+                            promise .then(res => res.json())
+                              .then(data => {
+                                  console.log(data);
+                                  $("#mmessage").html(data.message);
+                                //closing modal
+                                  $("#addProfileModal").modal("hide");
+                                
+                                  var content=""; 
+                                  content=content+'<tr>';
+                                  content=content+'  <td>'+ profile.username+'</td>';
+                                  content=content+'  <td>'+ profile.name+'</td>';
+                                  content=content+'  <td>'+ profile.email+'</td>';
+                                  content=content+'  <td>'+ profile.gender+'</td>';
+                                  content=content+'<td></td>';
+                                  content=content+'<td></td>';
+                                  content=content+'</tr>';
+                                  $("#ttbody").append(content);
+                                
+                              });
+	            }
+	            
+	
+	
+			    function openAddProfile(){
+			        $("#addProfileModal").modal("show");
+			  }
+  
     	   function deleteRow(aid) {
     		          //Make Ajax call
     		         /*  {
@@ -58,6 +108,7 @@
     		        			   console.log(data);
     		        			   $("#shankar_"+aid).hide();
     		        			   $("#mmessage").html(data.message);
+    		        			
     		        		   });
     		         
 	      }
@@ -77,7 +128,7 @@
 			<span id="mmessage" style="font-size: 18px;color: red;"></span>
 		<hr />
 		<h4>Profiles Data</h4>
-		<button type="button" class="btn btn-primary">Add Profile</button>
+		<button type="button" class="btn btn-primary" onclick="openAddProfile();">Add Profile</button>
 		<hr />
 		 <table class="table table-bordered">
     <thead>
@@ -90,7 +141,7 @@
         <th>Action</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody   id="ttbody">
     
     <%
     List<ProfileDTO> profileDTOs=(List<ProfileDTO>)request.getAttribute("profileDTOs");
@@ -123,5 +174,45 @@
 			<button type="button" class="btn btn-primary">Back</button>
 		</a>
 	</div>
+	
+	
+	<!-- The Modal -->
+<div class="modal" id="addProfileModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Add Profile</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+   <form id="addProfileForm">
+      <!-- Modal body -->
+      <div class="modal-body">
+     
+      <label>Username</label>
+      <input type="text" name="username"  id="username"  class="form-control">
+       <label>Password</label>
+      <input type="password" name="password"  id="password"  class="form-control">
+         
+        <label>Name</label>
+      <input type="text" name="name"  id="name" class="form-control">
+      
+      <label>Email</label>
+      <input type="email" name="email"  id="email" class="form-control">
+      <label>Gender</label>
+      <select  name="gender"  class="form-control" style="width: 50%;"  id="gender">
+         <option>Male</option>
+         <option>Female</option>
+      </select>
+      <br/>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" onclick="saveProfle();">Save</button>
+      </div>
+ </form>
+    </div>
+  </div>
+</div>
 </body>
 </html>
