@@ -1,12 +1,13 @@
 package com.rab3.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.rab3.controller.dto.ProfileDTO;
 
 public interface ProfileService {
 
-	public abstract String findPassword(String email);
+	public Optional<ProfileDTO> findPassword(String email);
 
 	String persist(ProfileDTO profileDTO);
 

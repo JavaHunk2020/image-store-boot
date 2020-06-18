@@ -43,9 +43,15 @@ public class ProfileServiceImpl  implements  ProfileService{
 	}
 	
 	@Override
-	public String findPassword(String email) {
-		return profileDao.findByEmail(email).get().getPassword();
-	}
+	public Optional<ProfileDTO> findPassword(String email) {
+		Optional<ProfileEntity> optional=profileDao.findByEmail(email);
+		ProfileDTO dto=null;
+		if(optional.isPresent()) {
+			dto=new ProfileDTO();
+			BeanUtils.copyProperties(optional.get(), dto);
+	   }
+		return Optional.ofNullable(dto);
+	}	
 	
 	@Override
 	public String persist(ProfileDTO profileDTO) {

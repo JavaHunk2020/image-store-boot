@@ -43,7 +43,7 @@ public class ProfileController {
 
 	@PostMapping("/forgotPassword")
 	public String forgetPasswordPage(@RequestParam String email, Model model) {
-		   String passsoword=profileService.findPassword(email);
+		   String passsoword=profileService.findPassword(email).get().getPassword();
 			if(passsoword!=null) {
 				model.addAttribute("password", "Hello your password is  =  " + passsoword);				
 			}else {
