@@ -18,6 +18,7 @@ import com.rab3.controller.dto.AppNameId;
 import com.rab3.controller.dto.ApplicationVO;
 import com.rab3.controller.dto.ProfileDTO;
 import com.rab3.service.ProfileService;
+import com.rab3.service.SalutationChoiceService;
 
 @RestController
 @RequestMapping("/api2")
@@ -25,6 +26,20 @@ public class ProfileRestController {
 	
 	@Autowired
 	private ProfileService profileService;
+	
+	@Autowired
+	private SalutationChoiceService salutationChoiceService;
+	
+	
+	@GetMapping("/profiles/choices")
+	public List<String> profilesChoices() {
+		return salutationChoiceService.findDifferentChoices();
+	}
+	
+	@GetMapping("/profiles/salutations/{choice}")
+	public List<String> profilesChoices(@PathVariable String choice) {
+		return salutationChoiceService.findSalutationsByChoice(choice);
+	}
 	
 	/**
 	 *    /*  {
